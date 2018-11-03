@@ -3,9 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "antd": "^3.10.3",
+    "lodash": "^4.17.11",
+    "materialize-css": "^1.0.0-rc.2",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
-    "react-scripts": "2.0.5"
+    "react-scripts": "2.0.5",
+    "react-text-mask": "^5.4.3"
   },
   "scripts": {
     "start": "react-scripts start",
