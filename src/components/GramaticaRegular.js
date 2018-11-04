@@ -1,8 +1,7 @@
 import React, { Component} from 'react';
 import PropTypes from 'prop-types';
-import { AutoComplete, Button, Divider } from 'antd';
+import { AutoComplete, Button } from 'antd';
 import _ from 'lodash';
-import Automato from './Automato';
 
 class GramaticaRegular extends Component {
   state = {
