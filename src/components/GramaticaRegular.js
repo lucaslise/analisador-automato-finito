@@ -1,8 +1,15 @@
-import React, { Component} from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { AutoComplete, Button, Divider } from 'antd';
+import { AutoComplete, Button, Popover, Tag } from 'antd';
 import _ from 'lodash';
-import Automato from './Automato';
+
+const helpContent = (
+  <ul>
+    <li>Exemplo: <Tag >S ::= aA | bB | #</Tag></li>
+    <li>Separador deve ser o caracter <Tag >|</Tag></li>
+    <li>Finalizador identificado pelo caracter <Tag >#</Tag></li>
+  </ul>
+);
 
 class GramaticaRegular extends Component {
   state = {
@@ -98,6 +105,9 @@ class GramaticaRegular extends Component {
   render() {
     return (
       <div>
+        <Popover content={helpContent} title="Ajuda" trigger="focus">
+          <Button icon="question" style={{ float: 'right' }}>Ajuda</Button>
+        </Popover>
         {this.getFields()}
       </div>
     );
