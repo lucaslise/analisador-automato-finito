@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "antd": "^3.10.3",
+    "eslint-config-airbnb": "^17.1.0",
     "lodash": "^4.17.11",
     "materialize-css": "^1.0.0-rc.2",
     "react": "^16.6.0",
