@@ -9,20 +9,18 @@ class Determinizacao extends Component {
     rules: [],
   };
 
-  componentWillReceiveProps(nextProps){
-    if(nextProps.rules !== this.props.rules){
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.rules !== this.props.rules) {
       this.setState({
-        rules: []
+        rules: [],
       });
     }
   }
 
   ruleExist = (name) => {
     if (name) {
-      const response = _.find(this.state.rules, (rule) => {
-         return JSON.stringify(_.toArray(rule.name)) === JSON.stringify(_.toArray(name));
-      });
-      return response ? true : false;
+      const response = _.find(this.state.rules, rule => JSON.stringify(_.toArray(rule.name)) === JSON.stringify(_.toArray(name)));
+      return !!response;
     }
   }
 
@@ -32,7 +30,7 @@ class Determinizacao extends Component {
         ...this.state.rules,
         {
           name,
-        }
+        },
       ];
 
       this.setState({
@@ -43,32 +41,30 @@ class Determinizacao extends Component {
   }
 
   render() {
-    const addColumns = getNaoTerminais(this.props.rules).map(naoTerminal => {
-      return {
-        title: naoTerminal,
-        key: naoTerminal,
-        width: 400,
-        align: 'center',
-        render: (rule) => {
-          let next = _.toArray(rule.name).map(n => {
-            const selectedRule = _.find(this.props.rules, (o) => { return o.name === n; });
-            if (selectedRule && selectedRule.value) {
-              return findNextRule(selectedRule.value, naoTerminal);
-            }
-          });
-
-          next = _.sortBy(_.uniq(_.compact(_.flatten(next))));
-
-          if (next[0]) {
-            this.insertNewRule(next);
+    const addColumns = getNaoTerminais(this.props.rules).map(naoTerminal => ({
+      title: naoTerminal,
+      key: naoTerminal,
+      width: 400,
+      align: 'center',
+      render: (rule) => {
+        let next = _.toArray(rule.name).map((n) => {
+          const selectedRule = _.find(this.props.rules, o => o.name === n);
+          if (selectedRule && selectedRule.value) {
+            return findNextRule(selectedRule.value, naoTerminal);
           }
+        });
 
-          return next.length ? `[${next.join(', ')}]` : '-';
+        next = _.sortBy(_.uniq(_.compact(_.flatten(next))));
+
+        if (next[0]) {
+          this.insertNewRule(next);
         }
-      };
-    });
 
-    let columns = [{
+        return next.length ? `[${next.join(', ')}]` : '-';
+      },
+    }));
+
+    const columns = [{
       key: 'name',
       width: 200,
       align: 'center',
@@ -78,32 +74,47 @@ class Determinizacao extends Component {
             <Fragment>
               {rule.value.indexOf(FINALIZADOR) > -1 ? '* ' : ''}
               <Icon type="arrow-right" style={{ fontSize: 10 }} />
+            [
               {rule.name}
+]
             </Fragment>
-          )
-        } else {
-          let finaliza = false;
-          _.toArray(rule.name).forEach(n => {
-            if (n === 'X') {
-              finaliza = true;
-              return;
-            }
-
-            const selectedRule = _.find(this.props.rules, (o) => { return o.name === n; });
-            if (selectedRule && selectedRule.value) {
-              const isFinished = selectedRule.value.indexOf(FINALIZADOR) > -1;
-              if (isFinished) {
-                finaliza = true;
-              }
-            }
-          });
-
-          const response = finaliza ? `* [${rule.name}]` : `[${rule.name}]`;
-          return response;
+          );
         }
-      }
+        let finaliza = false;
+        _.toArray(rule.name).forEach((n) => {
+          if (n === 'X') {
+            finaliza = true;
+            return;
+          }
+
+          const { rules } = this.props;
+
+          const selectedRule = _.find(rules, o => o.name === n);
+          if (selectedRule && selectedRule.value) {
+            const isFinished = selectedRule.value.indexOf(FINALIZADOR) > -1;
+            if (isFinished) {
+              finaliza = true;
+            }
+          }
+        });
+
+        const response = finaliza ? `* [${rule.name}]` : `[${rule.name}]`;
+        return response;
+      },
     },
-    ...addColumns];
+    ...addColumns,
+    {
+      title: 'LLC',
+      width: 75,
+      align: 'center',
+      render: () => <Icon type="close" theme="outlined" style={{ color: 'red' }} />,
+    },
+    {
+      title: 'Vivo',
+      align: 'center',
+      width: 75,
+      render: () => <Icon type="check" theme="outlined" style={{ color: 'green' }} />,
+    }];
 
     const firstLine = _.head(this.props.rules);
 
@@ -127,6 +138,6 @@ class Determinizacao extends Component {
 
 Determinizacao.propTypes = {
   rules: PropTypes.array.isRequired,
-}
+};
 
 export default Determinizacao;

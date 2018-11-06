@@ -1,7 +1,26 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { AutoComplete, Button } from 'antd';
+import {
+  AutoComplete, Button, Popover, Tag,
+} from 'antd';
 import _ from 'lodash';
+
+const helpContent = (
+  <ul>
+    <li>
+Exemplo:
+      <Tag>S ::= aA | bB | #</Tag>
+    </li>
+    <li>
+Separador deve ser o caracter
+      <Tag>|</Tag>
+    </li>
+    <li>
+Finalizador identificado pelo caracter
+      <Tag>#</Tag>
+    </li>
+  </ul>
+);
 
 class GramaticaRegular extends Component {
   state = {
@@ -29,8 +48,8 @@ class GramaticaRegular extends Component {
     });
 
     this.setState({
-      ...this.state,
       rules,
+      ...this.state,
     });
 
     this.props.onChangeRules(this.state.rules);
@@ -86,10 +105,11 @@ class GramaticaRegular extends Component {
           onSearch={this.handleSearch}
           onChange={this.handleChange(rule)}
           value={`${rule.name} ::= ${rule.value}`}
+          width={600}
         />
         <Button size="small" title="Remover Regra" onClick={this.handleDeleteRule(rule)} icon="delete" type="danger" style={{ marginLeft: 10, display: rule.initial ? 'none' : '' }} />
         <Button size="small" onClick={this.handleNewRule} style={{ marginLeft: 5, display: rules.length === index + 1 ? '-webkit-inline-box' : 'none' }}>
-          Nova Regra
+            Nova Regra
         </Button>
       </div>
     ));
@@ -100,6 +120,9 @@ class GramaticaRegular extends Component {
   render() {
     return (
       <div>
+        <Popover content={helpContent} title="Ajuda" trigger="focus">
+          <Button icon="question" style={{ float: 'right' }}>Ajuda</Button>
+        </Popover>
         {this.getFields()}
       </div>
     );
