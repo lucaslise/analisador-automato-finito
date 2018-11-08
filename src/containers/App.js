@@ -5,7 +5,6 @@ import {
 import Automato from '../components/Automato';
 import GramaticaRegular from '../components/GramaticaRegular';
 import Determinizacao from '../components/Determinizacao';
-import Minimizacao from '../components/Minimizacao';
 import { isAFND } from '../services/helper';
 
 class App extends Component {
@@ -36,14 +35,9 @@ class App extends Component {
             <Automato rules={rules} />
           </Card>
         </Col>
-        <Col offset={10} lg={14} style={{ display: isAFND(rules) ? 'block' : 'none', marginTop: 16 }}>
+        <Col offset={10} xs={24} lg={14} style={{ display: isAFND(rules) ? 'block' : 'none', marginTop: 16 }}>
           <Card title="Determinização" bordered={false}>
             <Determinizacao rules={rules} />
-          </Card>
-        </Col>
-        <Col offset={10} lg={14} style={{ display: isAFND(rules) ? 'block' : 'none', marginTop: 16 }}>
-          <Card title="Minimização" bordered={false}>
-            <Minimizacao rules={rules} />
           </Card>
         </Col>
       </Row>
