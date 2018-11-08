@@ -1,8 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Icon, Table } from 'antd';
+import { Icon, Table, Card } from 'antd';
 import _ from 'lodash';
-import { getNaoTerminais, FINALIZADOR, findNextRule } from '../services/helper';
+import {
+  getNextVariablesRules, getNaoTerminais, FINALIZADOR, isFinished,
+} from '../services/helper';
+import Minimizacao from './Minimizacao';
 
 class Determinizacao extends Component {
   state = {
@@ -47,18 +50,8 @@ class Determinizacao extends Component {
       width: 400,
       align: 'center',
       render: (rule) => {
-        let next = _.toArray(rule.name).map((n) => {
-          const selectedRule = _.find(this.props.rules, o => o.name === n);
-          if (selectedRule && selectedRule.value) {
-            return findNextRule(selectedRule.value, naoTerminal);
-          }
-        });
-
-        next = _.sortBy(_.uniq(_.compact(_.flatten(next))));
-
-        if (next[0]) {
-          this.insertNewRule(next);
-        }
+        const next = getNextVariablesRules(rule.name, this.props.rules, naoTerminal);
+        if (next[0]) this.insertNewRule(next);
 
         return next.length ? `[${next.join(', ')}]` : '-';
       },
@@ -80,23 +73,8 @@ class Determinizacao extends Component {
             </Fragment>
           );
         }
-        let finaliza = false;
-        _.toArray(rule.name).forEach((n) => {
-          if (n === 'X') {
-            finaliza = true;
-            return;
-          }
 
-          const { rules } = this.props;
-
-          const selectedRule = _.find(rules, o => o.name === n);
-          if (selectedRule && selectedRule.value) {
-            const isFinished = selectedRule.value.indexOf(FINALIZADOR) > -1;
-            if (isFinished) {
-              finaliza = true;
-            }
-          }
-        });
+        const finaliza = isFinished(rule.name, this.props.rules);
 
         const response = finaliza ? `* [${rule.name}]` : `[${rule.name}]`;
         return response;
@@ -131,7 +109,12 @@ class Determinizacao extends Component {
     }
 
     return (
-      <Table bordered dataSource={rules} columns={columns} pagination={false} />
+      <Fragment>
+        <Table bordered dataSource={rules} columns={columns} pagination={false} />
+        <Card title="Minimização" bordered={false}>
+          <Minimizacao rules={rules} originalRules={this.props.rules} />
+        </Card>
+      </Fragment>
     );
   }
 }
