@@ -12,8 +12,8 @@ class Determinizacao extends Component {
     rules: [],
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.rules !== this.props.rules) {
+  componentWillReceiveProps() {
+    if (!_.isEmpty(this.state.rules)) {
       this.setState({
         rules: [],
       });
@@ -110,10 +110,8 @@ class Determinizacao extends Component {
 
     return (
       <Fragment>
-        <Table bordered dataSource={rules} columns={columns} pagination={false} />
-        <Card title="Minimização" bordered={false}>
-          <Minimizacao rules={rules} originalRules={this.props.rules} />
-        </Card>
+        <Table title={() => 'Determinização'} bordered dataSource={rules} columns={columns} pagination={false} style={{ marginBottom: 15 }} />
+        <Minimizacao rules={rules} originalRules={this.props.rules} />
       </Fragment>
     );
   }

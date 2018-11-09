@@ -7,11 +7,13 @@ import {
 } from '../services/helper';
 
 class Determinizacao extends Component {
-  state = {};
+  state = {
+    oRules: [],
+  };
 
-  render() {
-    const rules = this.props.rules.map(rule => getNaoTerminais(this.props.originalRules).map((naoTerminal) => {
-      const next = getNextVariablesRules(rule.name, this.props.originalRules, naoTerminal);
+  componentDidUpdate(nextProps) {
+    const rules = nextProps.rules.map(rule => getNaoTerminais(nextProps.originalRules).map((naoTerminal) => {
+      const next = getNextVariablesRules(rule.name, nextProps.originalRules, naoTerminal);
 
       return {
         finished: isFinished(rule.name, this.props.originalRules),
@@ -20,21 +22,49 @@ class Determinizacao extends Component {
         value: next,
       };
     }));
-    console.warn(rules);
 
+    let groupK = rules.map(rule => this.getGroups(rule, true));
+    let groupKF = rules.map(rule => this.getGroups(rule, false));
+
+    groupK = _.uniq(_.flatten(_.compact(groupK))).join(', ');
+    groupKF = _.uniq(_.flatten(_.compact(groupKF))).join(', ');
+
+    const oRules = [{
+      valueK: `{ ${groupK} }`,
+      valueKF: `{ ${groupKF} }`,
+    }];
+
+    if (JSON.stringify(this.state.oRules) !== JSON.stringify(oRules)) {
+      this.setState({
+        ...this.state,
+        oRules,
+      });
+    }
+  }
+
+  getGroups = (rule, finished) => {
+    const response = _.map(rule, (r) => {
+      const res = r.finished === finished && !_.isEmpty(r.initialValue) ? `[${_.toArray(r.initialValue).join(', ')}]` : null;
+      return res;
+    });
+
+    return _.compact(response);
+  }
+
+  render() {
     const columns = [{
       title: 'K',
       align: 'center',
-      render: () => '',
+      dataIndex: 'valueK',
     },
     {
       title: 'K - F',
       align: 'center',
-      render: () => '',
+      dataIndex: 'valueKF',
     }];
 
     return (
-      <Table bordered dataSource={this.props.rules} columns={columns} pagination={false} />
+      <Table title={() => 'Minimização'} bordered dataSource={this.state.oRules} columns={columns} pagination={false} />
     );
   }
 }

@@ -1,14 +1,20 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Icon, Table, Tag } from 'antd';
+import {
+  Icon, Table, Tag, Row, Col,
+} from 'antd';
 import _ from 'lodash';
-import { getNaoTerminais, FINALIZADOR, findNextRule, isAFND } from '../services/helper';
+import {
+  getNaoTerminais, FINALIZADOR, findNextRule, isAFND,
+} from '../services/helper';
 
 class Automato extends Component {
   state = {};
 
+  filterCorrectRules = rules => _.reject(rules, rule => rule.value === '');
+
   render() {
-    const rules = [
+    let rules = [
       ...this.props.rules,
       {
         name: 'X',
@@ -16,19 +22,19 @@ class Automato extends Component {
       },
     ];
 
-    const addColumns = getNaoTerminais(this.props.rules).map(naoTerminal => {
-      return {
-        title: naoTerminal,
-        key: naoTerminal,
-        width: 400,
-        align: 'center',
-        render: (rule) => {
-          const next = findNextRule(rule.value, naoTerminal);
+    rules = this.filterCorrectRules(rules);
 
-          return next.length ? next.join(', ') : '-'
-        } ,
-      };
-    });
+    const addColumns = getNaoTerminais(this.props.rules).map(naoTerminal => ({
+      title: naoTerminal,
+      key: naoTerminal,
+      width: 400,
+      align: 'center',
+      render: (rule) => {
+        const next = findNextRule(rule.value, naoTerminal);
+
+        return next.length ? next.join(', ') : '-';
+      },
+    }));
 
     const columns = [{
       key: 'name',
@@ -42,22 +48,44 @@ class Automato extends Component {
               <Icon type="arrow-right" style={{ fontSize: 10 }} />
               {rule.name}
             </Fragment>
-          )
-        } else {
-          return rule.value.indexOf(FINALIZADOR) > -1 || rule.name === 'X' ? `* ${rule.name}` : rule.name;
+          );
         }
-      }
+        return rule.value.indexOf(FINALIZADOR) > -1 || rule.name === 'X' ? `* ${rule.name}` : rule.name;
+      },
     },
     ...addColumns];
 
+
     return (
       <div>
-        {rules[0].name === 'X'
+        {rules[0] && rules[0].name === 'X'
           ? <p style={{ textAlign: 'center' }}>Adicione uma Gramática Regular</p>
-          :<div>
-            <Table bordered dataSource={rules} columns={columns} pagination={false} />
-            <p style={{ textAlign: 'center', marginTop: 10 }}>{isAFND(this.props.rules) ? <Tag color="red">Autômato Finito Não Determinístico</Tag> : <Tag color="blue">Autômato Finito Determinístico</Tag> }</p>
-          </div>}
+          : (
+            <div>
+              <Table
+                title={() => (
+                  <div style={{
+                    display: rules[0] ? 'block' : 'none',
+                  }}
+                  >
+                    <Row>
+                      <Col xs={12}>
+                        Autômato Finito
+                      </Col>
+                      <Col xs={12} style={{ textAlign: 'right' }}>
+                        {isAFND(this.props.rules) ? <Tag color="red">Autômato Finito Não Determinístico</Tag> : <Tag color="blue">Autômato Finito Determinístico</Tag> }
+                      </Col>
+                    </Row>
+                  </div>
+                )
+              }
+                bordered
+                dataSource={rules}
+                columns={columns}
+                pagination={false}
+              />
+            </div>
+          )}
       </div>
     );
   }
@@ -65,6 +93,6 @@ class Automato extends Component {
 
 Automato.propTypes = {
   rules: PropTypes.array.isRequired,
-}
+};
 
 export default Automato;

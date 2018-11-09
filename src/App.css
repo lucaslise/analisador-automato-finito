@@ -24,3 +24,15 @@ body {
     -webkit-transform: translateY(50%);
     transform: translateY(50%);
 }
+
+.ant-table-body {
+    transition: opacity .3s;
+    background-color: white;
+}
+
+.ant-table.ant-table-bordered .ant-table-title {
+    border: 1px solid #e8e8e8;
+    padding-left: 16px;
+    padding-right: 16px;
+    background-color: white;
+}

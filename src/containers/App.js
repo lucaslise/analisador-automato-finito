@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   Divider, Row, Col, Card,
 } from 'antd';
+import _ from 'lodash';
 import Automato from '../components/Automato';
 import GramaticaRegular from '../components/GramaticaRegular';
 import Determinizacao from '../components/Determinizacao';
@@ -19,26 +20,20 @@ class App extends Component {
   }
 
   render() {
-    const { rules } = this.state;
+    const rules = _.reject(this.state.rules, rule => _.isEmpty(rule.value));
 
     return (
       <Row gutter={16} style={{ padding: 20 }}>
-        <Col lg={10}>
-          <Divider>Entrada</Divider>
+        <Col offset={4} xs={16}>
           <Card title="Gramática Regular" bordered={false}>
             <GramaticaRegular onChangeRules={this.handleChangeRules} />
           </Card>
         </Col>
-        <Col lg={14}>
-          <Divider>Saída</Divider>
-          <Card title="Autômato Finito" bordered={false}>
-            <Automato rules={rules} />
-          </Card>
+        <Col offset={4} xs={16} style={{ marginTop: 15, display: _.isEmpty(rules) ? 'none' : 'block' }}>
+          <Automato rules={rules} />
         </Col>
-        <Col offset={10} xs={24} lg={14} style={{ display: isAFND(rules) ? 'block' : 'none', marginTop: 16 }}>
-          <Card title="Determinização" bordered={false}>
-            <Determinizacao rules={rules} />
-          </Card>
+        <Col offset={4} xs={16} style={{ display: isAFND(rules) ? 'block' : 'none', marginTop: 16 }}>
+          <Determinizacao rules={rules} />
         </Col>
       </Row>
     );
