@@ -8,15 +8,11 @@ import _ from 'lodash';
 const helpContent = (
   <ul>
     <li>
-Exemplo:
-      <Tag>S ::= aA | bB | #</Tag>
-    </li>
-    <li>
-Separador deve ser o caracter
+      Separador deve ser o caracter
       <Tag>|</Tag>
     </li>
     <li>
-Finalizador identificado pelo caracter
+      Finalizador identificado pelo caracter
       <Tag>#</Tag>
     </li>
   </ul>
@@ -31,15 +27,41 @@ class GramaticaRegular extends Component {
     }],
   };
 
+  validateInput = (value) => {
+    const input = value;
+
+    let upperCase = 0;
+    let downCase = 0;
+
+    const result = input.split('').map((character) => {
+      if (character === character.toUpperCase()) {
+        upperCase += 1;
+      } else {
+        downCase += 1;
+      }
+      if (upperCase > 1 || downCase > 1) return;
+
+
+      return character;
+    });
+
+    return result.join('');
+  };
+
   handleChange = rule => (value) => {
     let { rules } = this.state;
-
     rules = _.map(rules, (r) => {
       if (r.name === rule.name) {
-        let v = value.slice(6);
+        const splittedRule = value.split(' ::= ');
+
+        let v = splittedRule[1] ? splittedRule[1].replace(/\s+/g, ' ') : '';
         const valueSize = v.length;
 
         if (rule.value.length < valueSize && v[valueSize - 1] === ' ' && v[valueSize - 2] !== '|') v += '| ';
+
+        r.name = splittedRule[0].replace(' ::=', '').replace('::=', '').replace(/\s+/g, ' ');
+
+        v = v.split(' | ').map(v => this.validateInput(v)).join(' | ');
 
         r.value = v;
       }
@@ -101,11 +123,11 @@ class GramaticaRegular extends Component {
     return _.map(rules, (rule, index) => (
       <div>
         <AutoComplete
-          key={rule.name}
+          key={index}
           onSearch={this.handleSearch}
           onChange={this.handleChange(rule)}
           value={`${rule.name} ::= ${rule.value}`}
-          width={600}
+          style={{ width: '300px' }}
         />
         <Button size="small" title="Remover Regra" onClick={this.handleDeleteRule(rule)} icon="delete" type="danger" style={{ marginLeft: 10, display: rule.initial ? 'none' : '' }} />
         <Button size="small" onClick={this.handleNewRule} style={{ marginLeft: 5, display: rules.length === index + 1 ? '-webkit-inline-box' : 'none' }}>

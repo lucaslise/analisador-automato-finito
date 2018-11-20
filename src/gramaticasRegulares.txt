@@ -2,10 +2,6 @@ aA | bB | #
 aA | aB | b
 aS | aA | bB | #
 
-aA | bB | #
-aA | aB | b
-aS | aA | bB | #
-
 aA | bB
 aS | aC | a
 bS | bD | b

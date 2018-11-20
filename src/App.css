@@ -20,7 +20,6 @@ body {
     position: relative;
     top: 50%;
     width: 50%;
-    border-top: 1px solid gray;
     -webkit-transform: translateY(50%);
     transform: translateY(50%);
 }
@@ -35,4 +34,31 @@ body {
     padding-left: 16px;
     padding-right: 16px;
     background-color: white;
+}
+
+.ant-card-head-title {
+    padding: 10px 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    flex: 1 1;
+    display: inline-block;
+    font-size: 14px;
+}
+
+.ant-divider-horizontal.ant-divider-with-text-left .ant-divider-inner-text, .ant-divider-horizontal.ant-divider-with-text-right .ant-divider-inner-text {
+    display: inline-block;
+    padding: 0 10px;
+    font-size: 14px;
+}
+
+.ant-divider-horizontal.ant-divider-with-text, .ant-divider-horizontal.ant-divider-with-text-left, .ant-divider-horizontal.ant-divider-with-text-right {
+    display: table;
+    white-space: nowrap;
+    text-align: center;
+    background: transparent;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 16px;
+    margin: 5px 0;
 }

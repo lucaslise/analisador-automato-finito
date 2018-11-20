@@ -7,6 +7,7 @@ import Automato from '../components/Automato';
 import GramaticaRegular from '../components/GramaticaRegular';
 import Determinizacao from '../components/Determinizacao';
 import { isAFND } from '../services/helper';
+import Examples from '../components/Examples';
 
 class App extends Component {
   state = {
@@ -24,15 +25,20 @@ class App extends Component {
 
     return (
       <Row gutter={16} style={{ padding: 20 }}>
-        <Col offset={4} xs={16}>
+        <Col xs={24} md={{ span: 6 }} style={{ marginBottom: 20 }}>
+          <Card>
+            <Examples />
+          </Card>
+        </Col>
+        <Col md={{ span: 18 }} xs={{ span: 24 }}>
           <Card title="Gramática Regular" bordered={false}>
             <GramaticaRegular onChangeRules={this.handleChangeRules} />
           </Card>
         </Col>
-        <Col offset={4} xs={16} style={{ marginTop: 15, display: _.isEmpty(rules) ? 'none' : 'block' }}>
+        <Col md={{ span: 18 }} xs={{ span: 24 }} style={{ marginTop: 15, display: _.isEmpty(rules) ? 'none' : 'block' }}>
           <Automato rules={rules} />
         </Col>
-        <Col offset={4} xs={16} style={{ display: isAFND(rules) ? 'block' : 'none', marginTop: 16 }}>
+        <Col md={{ span: 18 }} xs={{ span: 24 }} style={{ display: isAFND(rules) ? 'block' : 'none', marginTop: 16 }}>
           <Determinizacao rules={rules} />
         </Col>
       </Row>
