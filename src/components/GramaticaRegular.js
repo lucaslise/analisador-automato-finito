@@ -22,8 +22,28 @@ class GramaticaRegular extends Component {
   state = {
     rules: [{
       name: 'S',
-      value: '',
+      value: 'aA | bB',
       initial: true,
+    },
+    {
+      name: 'A',
+      value: 'aS | aC | a',
+      initial: false,
+    },
+    {
+      name: 'B',
+      value: 'bS | bD | b',
+      initial: false,
+    },
+    {
+      name: 'C',
+      value: 'aB',
+      initial: false,
+    },
+    {
+      name: 'D',
+      value: ' bA',
+      initial: false,
     }],
   };
 

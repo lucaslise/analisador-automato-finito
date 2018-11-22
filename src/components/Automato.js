@@ -5,13 +5,13 @@ import {
 } from 'antd';
 import _ from 'lodash';
 import {
-  getNaoTerminais, FINALIZADOR, findNextRule, isAFND,
+  getTerminais, FINALIZADOR, findNextRule, isAFND,
 } from '../services/helper';
 
 class Automato extends Component {
   state = {};
 
-  filterCorrectRules = rules => _.reject(rules, rule => rule.value === '');
+  filterCorrectRules = rules => _.reject(rules, rule => rule.value === '' && rule.name !== 'X');
 
   render() {
     let rules = [
@@ -24,13 +24,13 @@ class Automato extends Component {
 
     rules = this.filterCorrectRules(rules);
 
-    const addColumns = getNaoTerminais(this.props.rules).map(naoTerminal => ({
-      title: naoTerminal,
-      key: naoTerminal,
+    const addColumns = getTerminais(this.props.rules).map(terminal => ({
+      title: terminal,
+      key: terminal,
       width: 400,
       align: 'center',
       render: (rule) => {
-        const next = findNextRule(rule.value, naoTerminal);
+        const next = findNextRule(rule.value, terminal);
 
         return next.length ? next.join(', ') : '-';
       },

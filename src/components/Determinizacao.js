@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Icon, Table, Card } from 'antd';
 import _ from 'lodash';
 import {
-  getNextVariablesRules, getNaoTerminais, FINALIZADOR, isFinished,
+  getNextVariablesRules, getTerminais, FINALIZADOR, isFinished,
 } from '../services/helper';
 import Minimizacao from './Minimizacao';
 
@@ -44,13 +44,13 @@ class Determinizacao extends Component {
   }
 
   render() {
-    const addColumns = getNaoTerminais(this.props.rules).map(naoTerminal => ({
-      title: naoTerminal,
-      key: naoTerminal,
+    const addColumns = getTerminais(this.props.rules).map(terminal => ({
+      title: terminal,
+      key: terminal,
       width: 400,
       align: 'center',
       render: (rule) => {
-        const next = getNextVariablesRules(rule.name, this.props.rules, naoTerminal);
+        const next = getNextVariablesRules(rule.name, this.props.rules, terminal);
         if (next[0]) this.insertNewRule(next);
 
         return next.length ? `[${next.join(', ')}]` : '-';
@@ -81,18 +81,19 @@ class Determinizacao extends Component {
       },
     },
     ...addColumns,
-    {
-      title: 'LLC',
-      width: 75,
-      align: 'center',
-      render: () => <Icon type="close" theme="outlined" style={{ color: 'red' }} />,
-    },
-    {
-      title: 'Vivo',
-      align: 'center',
-      width: 75,
-      render: () => <Icon type="check" theme="outlined" style={{ color: 'green' }} />,
-    }];
+    // {
+    //   title: 'LLC',
+    //   width: 75,
+    //   align: 'center',
+    //   render: () => <Icon type="close" theme="outlined" style={{ color: 'red' }} />,
+    // },
+    // {
+    //   title: 'Vivo',
+    //   align: 'center',
+    //   width: 75,
+    //   render: () => <Icon type="check" theme="outlined" style={{ color: 'green' }} />,
+    // }
+    ];
 
     const firstLine = _.head(this.props.rules);
 
