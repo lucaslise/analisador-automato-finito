@@ -38,7 +38,7 @@ class App extends Component {
         <Col md={{ span: 18 }} xs={{ span: 24 }} style={{ marginTop: 15, display: _.isEmpty(rules) ? 'none' : 'block' }}>
           <Automato rules={rules} />
         </Col>
-        <Col md={{ span: 18 }} xs={{ span: 24 }} style={{ display: isAFND(rules) ? 'block' : 'none', marginTop: 16 }}>
+        <Col md={{ span: 18, offset: 6 }} xs={{ span: 24 }} style={{ display: isAFND(rules) ? 'block' : 'none', marginTop: 16 }}>
           <Determinizacao rules={rules} />
         </Col>
       </Row>

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Table } from 'antd';
 import _ from 'lodash';
 import {
-  getNaoTerminais, getNextVariablesRules, isFinished,
+  getTerminais, getNextVariablesRules, isFinished,
 } from '../services/helper';
 
 class Determinizacao extends Component {
@@ -12,13 +12,13 @@ class Determinizacao extends Component {
   };
 
   componentDidUpdate(nextProps) {
-    const rules = nextProps.rules.map(rule => getNaoTerminais(nextProps.originalRules).map((naoTerminal) => {
-      const next = getNextVariablesRules(rule.name, nextProps.originalRules, naoTerminal);
+    const rules = nextProps.rules.map(rule => getTerminais(nextProps.originalRules).map((terminal) => {
+      const next = getNextVariablesRules(rule.name, nextProps.originalRules, terminal);
 
       return {
         finished: isFinished(rule.name, this.props.originalRules),
         initialValue: rule.name,
-        position: naoTerminal,
+        position: terminal,
         value: next,
       };
     }));
@@ -26,20 +26,66 @@ class Determinizacao extends Component {
     let groupK = rules.map(rule => this.getGroups(rule, true));
     let groupKF = rules.map(rule => this.getGroups(rule, false));
 
-    groupK = _.uniq(_.flatten(_.compact(groupK))).join(', ');
-    groupKF = _.uniq(_.flatten(_.compact(groupKF))).join(', ');
+    groupK = _.uniq(_.flatten(_.compact(groupK)));
+    groupKF = _.uniq(_.flatten(_.compact(groupKF)));
 
-    const oRules = [{
-      valueK: `{ ${groupK} }`,
-      valueKF: `{ ${groupKF} }`,
-    }];
+    const rrr = this.calculaMinimizacao(groupK, groupKF, rules);
 
-    if (JSON.stringify(this.state.oRules) !== JSON.stringify(oRules)) {
+    if (JSON.stringify(this.state.oRules) !== JSON.stringify(rrr)) {
       this.setState({
         ...this.state,
-        oRules,
+        oRules: rrr,
       });
     }
+  }
+
+  compairIsSameGroup = (value1, value2, groups, rules) => false;
+
+  calculaMinimizacao = (groupK, groupKF, rules) => {
+    const result = [{
+      valueK: `{ ${groupK.join(', ')} }`,
+      valueKF: `{ ${groupKF.join(', ')} }`,
+    }];
+
+    let resposta = [];
+    let le = [groupK];
+    const ld = [groupKF];
+
+    for (let k = 0; k < 3; k += 1) {
+      const groups = _.concat(le, ld);
+      let newGroupK = [];
+
+      const xxx = le.map((group) => {
+        newGroupK = [group[0]];
+        for (let i = 0; i < group.length; i += 1) {
+          const isValid = this.compairIsSameGroup(group[0], group[i], groups, rules);
+
+          if (isValid) {
+            newGroupK = _.uniq(_.concat(newGroupK, [group[i]]));
+          }
+        }
+
+        return [newGroupK, _.reject(group, n => _.includes(newGroupK, n))];
+      });
+
+      const x1 = xxx.map(x => x[0]);
+      const x2 = xxx.map(x => x[1]);
+      const res = _.reject(_.compact(_.concat(x1, x2)), x => x.length === 0);
+
+      const sss = {
+        valueK: res.map(n => `{ ${n} }`).join(', '),
+        valueKF: '',
+      };
+
+
+      le = res;
+      resposta = _.concat(resposta, sss);
+    }
+
+    return [
+      ...result,
+      ...resposta,
+    ];
   }
 
   getGroups = (rule, finished) => {

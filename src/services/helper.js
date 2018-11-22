@@ -4,20 +4,20 @@ export const FINALIZADOR = '#';
 
 export function isAFND(rules) {
   const afnd = rules.filter(({ value }) => {
-    const naoTerminais = value.match(/[0-9a-z]/g);
+    const terminais = value.match(/[0-9a-z]/g);
 
-    if (naoTerminais) {
-      return JSON.stringify(naoTerminais) !== JSON.stringify(_.uniq(naoTerminais));
+    if (terminais) {
+      return JSON.stringify(terminais) !== JSON.stringify(_.uniq(terminais));
     }
   });
 
   return afnd.length > 0;
 }
 
-export function getNaoTerminais(rules) {
-  const naoTerminais = rules.map(({ value }) => value.match(/[0-9a-z]/g));
+export function getTerminais(rules) {
+  const terminais = rules.map(({ value }) => value.match(/[0-9a-z]/g));
 
-  return _.sortBy(_.uniq(_.flatten(naoTerminais)));
+  return _.sortBy(_.uniq(_.flatten(terminais)));
 }
 
 export function findNextRule(value, char) {
@@ -36,11 +36,11 @@ export function findNextRule(value, char) {
   return _.compact(resp);
 }
 
-export function getNextVariablesRules(variables, rules, naoTerminal) {
+export function getNextVariablesRules(variables, rules, terminal) {
   const next = _.toArray(variables).map((n) => {
     const selectedRule = _.find(rules, o => o.name === n);
     if (selectedRule && selectedRule.value) {
-      return findNextRule(selectedRule.value, naoTerminal);
+      return findNextRule(selectedRule.value, terminal);
     }
   });
 
