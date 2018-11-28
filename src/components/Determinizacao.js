@@ -81,18 +81,18 @@ class Determinizacao extends Component {
       },
     },
     ...addColumns,
-    // {
-    //   title: 'LLC',
-    //   width: 75,
-    //   align: 'center',
-    //   render: () => <Icon type="close" theme="outlined" style={{ color: 'red' }} />,
-    // },
-    // {
-    //   title: 'Vivo',
-    //   align: 'center',
-    //   width: 75,
-    //   render: () => <Icon type="check" theme="outlined" style={{ color: 'green' }} />,
-    // }
+    {
+      title: 'LLC',
+      width: 75,
+      align: 'center',
+      render: () => <Icon type="check" theme="outlined" style={{ color: 'green' }} />,
+    },
+    {
+      title: 'Vivo',
+      align: 'center',
+      width: 75,
+      render: () => <Icon type="check" theme="outlined" style={{ color: 'green' }} />,
+    },
     ];
 
     const firstLine = _.head(this.props.rules);

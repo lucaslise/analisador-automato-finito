@@ -28,6 +28,11 @@ class Examples extends Component {
         <Tag style={tagStyle}>B ::= bS | bD | b</Tag>
         <Tag style={tagStyle}>C ::= aB</Tag>
         <Tag style={tagStyle}>D ::= bA</Tag>
+        <Divider orientation="left">Exemplo 3</Divider>
+        <Tag style={tagStyle}>A ::= aA |  aB | bA</Tag>
+        <Tag style={tagStyle}>B ::= aC </Tag>
+        <Tag style={tagStyle}>C ::= bD</Tag>
+        <Tag style={tagStyle}>D ::= aD | bD | #</Tag>
       </div>
     );
   }
