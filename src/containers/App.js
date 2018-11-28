@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Divider, Row, Col, Card,
+  Row, Col, Card,
 } from 'antd';
 import _ from 'lodash';
 import Automato from '../components/Automato';
@@ -8,6 +8,8 @@ import GramaticaRegular from '../components/GramaticaRegular';
 import Determinizacao from '../components/Determinizacao';
 import { isAFND } from '../services/helper';
 import Examples from '../components/Examples';
+import AutomatoResultante from '../components/AutomatoResultante';
+import GramaticaRegularResultante from '../components/GramaticaRegularResultante';
 
 class App extends Component {
   state = {
@@ -23,23 +25,35 @@ class App extends Component {
   render() {
     const rules = _.reject(this.state.rules, rule => _.isEmpty(rule.value));
 
+    const visibleStyle = {
+      marginTop: 15,
+      display: isAFND(rules) ? 'block' : 'none',
+    };
+
+    const columnsStyle = {
+      md: { span: 16 },
+      xs: { span: 24 },
+    };
+
     return (
       <Row gutter={16} style={{ padding: 20 }}>
-        <Col xs={24} md={{ span: 6 }}>
-          <Card>
-            <Examples />
-          </Card>
-        </Col>
-        <Col md={{ span: 18 }} xs={{ span: 24 }}>
-          <Card title="Gramática Regular" bordered={false}>
+        <Col md={{ span: 8 }} xs={{ span: 24 }}>
+          <Card title="Gramática Regular" bordered={false} style={{ marginBottom: 15 }}>
             <GramaticaRegular onChangeRules={this.handleChangeRules} />
           </Card>
+          <Examples />
         </Col>
-        <Col md={{ span: 18 }} xs={{ span: 24 }} style={{ marginTop: 15, display: _.isEmpty(rules) ? 'none' : 'block' }}>
+        <Col {...columnsStyle} style={{ display: _.isEmpty(rules) ? 'none' : 'block' }}>
           <Automato rules={rules} />
         </Col>
-        <Col md={{ span: 18, offset: 6 }} xs={{ span: 24 }} style={{ marginTop: -15, display: isAFND(rules) ? 'block' : 'none' }}>
+        <Col {...columnsStyle} style={visibleStyle}>
           <Determinizacao rules={rules} />
+        </Col>
+        <Col {...columnsStyle} style={visibleStyle}>
+          <AutomatoResultante rules={rules} />
+        </Col>
+        <Col {...columnsStyle} style={visibleStyle}>
+          <GramaticaRegularResultante rules={rules} />
         </Col>
       </Row>
     );

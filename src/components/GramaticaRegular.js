@@ -5,19 +5,6 @@ import {
 } from 'antd';
 import _ from 'lodash';
 
-const helpContent = (
-  <ul>
-    <li>
-      Separador deve ser o caracter
-      <Tag>|</Tag>
-    </li>
-    <li>
-      Finalizador identificado pelo caracter
-      <Tag>#</Tag>
-    </li>
-  </ul>
-);
-
 // {
 //   name: 'S',
 //   value: 'aA | b | cS | c | #',
@@ -168,9 +155,7 @@ class GramaticaRegular extends Component {
           style={{ width: '300px' }}
         />
         <Button size="small" title="Remover Regra" onClick={this.handleDeleteRule(rule)} icon="delete" type="danger" style={{ marginLeft: 10, display: rule.initial ? 'none' : '' }} />
-        <Button size="small" onClick={this.handleNewRule} style={{ marginLeft: 5, display: rules.length === index + 1 ? '-webkit-inline-box' : 'none' }}>
-            Nova Regra
-        </Button>
+        <Button size="small" onClick={this.handleNewRule} style={{ marginLeft: 5, display: rules.length === index + 1 ? '-webkit-inline-box' : 'none' }} icon="plus" title="Nova Regra" />
       </div>
     ));
   }
@@ -178,14 +163,7 @@ class GramaticaRegular extends Component {
   getNextRuleName = current => String.fromCharCode(current.charCodeAt(0) + 1)
 
   render() {
-    return (
-      <div>
-        <Popover content={helpContent} title="Ajuda" trigger="focus">
-          <Button icon="question" style={{ float: 'right' }}>Ajuda</Button>
-        </Popover>
-        {this.getFields()}
-      </div>
-    );
+    return this.getFields();
   }
 }
 

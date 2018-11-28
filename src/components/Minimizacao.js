@@ -103,26 +103,31 @@ class Determinizacao extends Component {
 
   calculaMinimizacao = (groupK, groupKF, rules) => {
     const result = [{
-      valueK: `{ ${groupK.join(', ')} }`,
-      valueKF: `{ ${groupKF.join(', ')} }`,
+      valueK: <Tag>{`{ ${groupK.join(', ')} }`}</Tag>,
+      valueKF: <Tag>{`{ ${groupKF.join(', ')} }`}</Tag>,
     }];
 
     let resposta = [];
     let responseLeft = [groupK];
     let responseRight = [groupKF];
 
-    for (let k = 0; k < 4; k += 1) {
+    let isPossible = true;
+    while (isPossible) {
       const groups = _.concat(responseLeft, responseRight);
 
       responseLeft = this.rebuildLine(responseLeft, groups, rules);
       responseRight = this.rebuildLine(responseRight, groups, rules);
 
-      const newLines = {
+      const newLine = {
         valueK: responseLeft.map(n => <Tag>{`{ ${n.join(', ')} }`}</Tag>),
         valueKF: responseRight.map(n => <Tag>{`{ ${n.join(', ')} }`}</Tag>),
       };
 
-      resposta = _.concat(resposta, newLines);
+      if (JSON.stringify(newLine) === JSON.stringify(resposta[resposta.length - 1])) {
+        isPossible = false;
+      } else {
+        resposta = _.concat(resposta, newLine);
+      }
     }
 
     return [
@@ -142,12 +147,12 @@ class Determinizacao extends Component {
 
   render() {
     const columns = [{
-      title: 'K',
+      title: 'F',
       align: 'center',
       dataIndex: 'valueK',
     },
     {
-      title: 'K - F',
+      title: 'F - K',
       align: 'center',
       dataIndex: 'valueKF',
     }];
