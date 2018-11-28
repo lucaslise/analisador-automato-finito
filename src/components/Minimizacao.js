@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Table } from 'antd';
+import { Table, Tag } from 'antd';
 import _ from 'lodash';
 import {
   getTerminais, getNextVariablesRules, isFinished,
@@ -117,12 +117,12 @@ class Determinizacao extends Component {
       responseLeft = this.rebuildLine(responseLeft, groups, rules);
       responseRight = this.rebuildLine(responseRight, groups, rules);
 
-      const sss = {
-        valueK: responseLeft.map(n => `{ ${n} }`).join(', '),
-        valueKF: responseRight.map(n => `{ ${n} }`).join(', '),
+      const newLines = {
+        valueK: responseLeft.map(n => <Tag>{`{ ${n.join(', ')} }`}</Tag>),
+        valueKF: responseRight.map(n => <Tag>{`{ ${n.join(', ')} }`}</Tag>),
       };
 
-      resposta = _.concat(resposta, sss);
+      resposta = _.concat(resposta, newLines);
     }
 
     return [
