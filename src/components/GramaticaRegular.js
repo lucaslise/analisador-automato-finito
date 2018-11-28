@@ -18,28 +18,51 @@ const helpContent = (
   </ul>
 );
 
+// {
+//   name: 'S',
+//   value: 'aA | b | cS | c | #',
+//   initial: true,
+// },
+// {
+//   name: 'A',
+//   value: 'aS | bC | b | cA',
+//   initial: false,
+// },
+// {
+//   name: 'B',
+//   value: 'aA | cB | cS | c',
+//   initial: false,
+// },
+// {
+//   name: 'C',
+//   value: 'aS | a | cC',
+//   initial: false,
+// },
+
 class GramaticaRegular extends Component {
   state = {
-    rules: [{
-      name: 'S',
-      value: 'aA | b | cS | c | #',
-      initial: true,
-    },
-    {
-      name: 'A',
-      value: 'aS | bC | b | cA',
-      initial: false,
-    },
-    {
-      name: 'B',
-      value: 'aA | cB | cS | c',
-      initial: false,
-    },
-    {
-      name: 'C',
-      value: 'aS | a | cC',
-      initial: false,
-    }],
+    rules: [
+      {
+        name: 'A',
+        value: 'aA | aB | bA',
+        initial: true,
+      },
+      {
+        name: 'B',
+        value: 'aC',
+        initial: false,
+      },
+      {
+        name: 'C',
+        value: 'bD',
+        initial: false,
+      },
+      {
+        name: 'D',
+        value: 'aD | bD | #',
+        initial: false,
+      },
+    ],
   };
 
   validateInput = (value) => {

@@ -25,7 +25,7 @@ class App extends Component {
 
     return (
       <Row gutter={16} style={{ padding: 20 }}>
-        <Col xs={24} md={{ span: 6 }} style={{ marginBottom: 20 }}>
+        <Col xs={24} md={{ span: 6 }}>
           <Card>
             <Examples />
           </Card>
@@ -38,7 +38,7 @@ class App extends Component {
         <Col md={{ span: 18 }} xs={{ span: 24 }} style={{ marginTop: 15, display: _.isEmpty(rules) ? 'none' : 'block' }}>
           <Automato rules={rules} />
         </Col>
-        <Col md={{ span: 18, offset: 6 }} xs={{ span: 24 }} style={{ display: isAFND(rules) ? 'block' : 'none', marginTop: 16 }}>
+        <Col md={{ span: 18, offset: 6 }} xs={{ span: 24 }} style={{ marginTop: -15, display: isAFND(rules) ? 'block' : 'none' }}>
           <Determinizacao rules={rules} />
         </Col>
       </Row>

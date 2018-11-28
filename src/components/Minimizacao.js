@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Table } from 'antd';
+import { Table, Tag } from 'antd';
 import _ from 'lodash';
 import {
   getTerminais, getNextVariablesRules, isFinished,
@@ -29,17 +29,77 @@ class Determinizacao extends Component {
     groupK = _.uniq(_.flatten(_.compact(groupK)));
     groupKF = _.uniq(_.flatten(_.compact(groupKF)));
 
-    const rrr = this.calculaMinimizacao(groupK, groupKF, rules);
+    const result = this.calculaMinimizacao(groupK, groupKF, rules);
 
-    if (JSON.stringify(this.state.oRules) !== JSON.stringify(rrr)) {
+    if (JSON.stringify(this.state.oRules) !== JSON.stringify(result)) {
       this.setState({
         ...this.state,
-        oRules: rrr,
+        oRules: result,
       });
     }
   }
 
-  compairIsSameGroup = (value1, value2, groups, rules) => false;
+  compairIsSameGroup = (value1, value2, groups, rules) => {
+    let result = false;
+
+    getTerminais(this.props.originalRules).forEach((terminal) => {
+      let first = [];
+      let second = [];
+
+      rules.forEach((rule) => {
+        rule.forEach((r) => {
+          if (r.position === terminal && `[${_.toString(r.initialValue)}]` === value1.replace(/ /g, '')) {
+            first = `[${r.value.join(',')}]`;
+          }
+
+          if (r.position === terminal && `[${_.toString(r.initialValue)}]` === value2.replace(/ /g, '')) {
+            second = `[${r.value.join(',')}]`;
+          }
+        });
+      });
+
+      let local = false;
+      groups.every((group) => {
+        const g = group.map(x => _.toString(x).replace(/ /g, ''));
+
+        if (_.includes(g, first) && _.includes(g, second)) {
+          local = true;
+        }
+
+        if (first.length === 2 || second.length === 2) {
+          local = false;
+          return false;
+        }
+      });
+
+      result = local;
+
+      if (result === false) return null;
+    });
+
+    return result;
+  };
+
+  rebuildLine = (side, groups, rules) => {
+    let newGroupK = [];
+
+    const result = side.map((group) => {
+      newGroupK = [group[0]];
+      for (let i = 1; i < group.length; i += 1) {
+        const isValid = this.compairIsSameGroup(group[0], group[i], groups, rules);
+
+        if (isValid) {
+          newGroupK = _.uniq(_.concat(newGroupK, [group[i]]));
+        }
+      }
+
+      return [newGroupK, _.reject(group, n => _.includes(newGroupK, n))];
+    });
+
+    const x1 = result.map(x => x[0]);
+    const x2 = result.map(x => x[1]);
+    return _.reject(_.compact(_.concat(x1, x2)), x => x.length === 0);
+  }
 
   calculaMinimizacao = (groupK, groupKF, rules) => {
     const result = [{
@@ -48,38 +108,21 @@ class Determinizacao extends Component {
     }];
 
     let resposta = [];
-    let le = [groupK];
-    const ld = [groupKF];
+    let responseLeft = [groupK];
+    let responseRight = [groupKF];
 
-    for (let k = 0; k < 3; k += 1) {
-      const groups = _.concat(le, ld);
-      let newGroupK = [];
+    for (let k = 0; k < 4; k += 1) {
+      const groups = _.concat(responseLeft, responseRight);
 
-      const xxx = le.map((group) => {
-        newGroupK = [group[0]];
-        for (let i = 0; i < group.length; i += 1) {
-          const isValid = this.compairIsSameGroup(group[0], group[i], groups, rules);
+      responseLeft = this.rebuildLine(responseLeft, groups, rules);
+      responseRight = this.rebuildLine(responseRight, groups, rules);
 
-          if (isValid) {
-            newGroupK = _.uniq(_.concat(newGroupK, [group[i]]));
-          }
-        }
-
-        return [newGroupK, _.reject(group, n => _.includes(newGroupK, n))];
-      });
-
-      const x1 = xxx.map(x => x[0]);
-      const x2 = xxx.map(x => x[1]);
-      const res = _.reject(_.compact(_.concat(x1, x2)), x => x.length === 0);
-
-      const sss = {
-        valueK: res.map(n => `{ ${n} }`).join(', '),
-        valueKF: '',
+      const newLines = {
+        valueK: responseLeft.map(n => <Tag>{`{ ${n.join(', ')} }`}</Tag>),
+        valueKF: responseRight.map(n => <Tag>{`{ ${n.join(', ')} }`}</Tag>),
       };
 
-
-      le = res;
-      resposta = _.concat(resposta, sss);
+      resposta = _.concat(resposta, newLines);
     }
 
     return [
