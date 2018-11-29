@@ -52,7 +52,7 @@ class Determinizacao extends Component {
   compairIsSameGroup = (value1, value2, groups, rules) => {
     let result = false;
 
-    getTerminais(this.props.originalRules).forEach((terminal) => {
+    _.forEach(getTerminais(this.props.originalRules), (terminal) => {
       let first = [];
       let second = [];
 
@@ -69,22 +69,21 @@ class Determinizacao extends Component {
       });
 
       let local = false;
-      groups.every((group) => {
+      _.forEach(groups, (group) => {
         const g = group.map(x => _.toString(x).replace(/ /g, ''));
 
         if (_.includes(g, first) && _.includes(g, second)) {
           local = true;
         }
 
-        if (first.length === 2 || second.length === 2) {
+        if (first === '[]' || second === '[]') {
           local = false;
           return false;
         }
       });
 
       result = local;
-
-      if (result === false) return null;
+      if (result === false) return false;
     });
 
     return result;
@@ -97,7 +96,7 @@ class Determinizacao extends Component {
       newGroupK = [group[0]];
       for (let i = 1; i < group.length; i += 1) {
         const isValid = this.compairIsSameGroup(group[0], group[i], groups, rules);
-
+        // console.warn(isValid);
         if (isValid) {
           newGroupK = _.uniq(_.concat(newGroupK, [group[i]]));
         }

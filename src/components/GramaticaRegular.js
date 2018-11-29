@@ -5,6 +5,8 @@ import {
 } from 'antd';
 import _ from 'lodash';
 
+const INITIAL_VARIABLE = 'S';
+
 // {
 //   name: 'S',
 //   value: 'aA | b | cS | c | #',
@@ -30,23 +32,23 @@ class GramaticaRegular extends Component {
   state = {
     rules: [
       {
-        name: 'A',
-        value: 'aA | aB | bA',
+        name: 'S',
+        value: 'aA | bB | b | cS | c | #',
         initial: true,
       },
       {
+        name: 'A',
+        value: 'aS | a | bC | cA',
+        initial: false,
+      },
+      {
         name: 'B',
-        value: 'aC',
+        value: 'aA | cB | cS | c',
         initial: false,
       },
       {
         name: 'C',
-        value: 'bD',
-        initial: false,
-      },
-      {
-        name: 'D',
-        value: 'aD | bD | #',
+        value: 'aS | a | cA | cC',
         initial: false,
       },
     ],
@@ -108,7 +110,7 @@ class GramaticaRegular extends Component {
     const currentRuleName = rules[rules.length - 1].name;
     let nextRuleName = 'A';
 
-    if (currentRuleName !== 'S') {
+    if (currentRuleName !== INITIAL_VARIABLE) {
       nextRuleName = this.getNextRuleName(currentRuleName);
     }
 
@@ -135,7 +137,7 @@ class GramaticaRegular extends Component {
 
     this.props.onChangeRules(newRules);
 
-    if (rule.name !== 'S') {
+    if (rule.name !== INITIAL_VARIABLE) {
       this.setState({
         ...this.state,
         rules: newRules,
