@@ -8,8 +8,6 @@ import GramaticaRegular from '../components/GramaticaRegular';
 import Determinizacao from '../components/Determinizacao';
 import { isAFND } from '../services/helper';
 import Examples from '../components/Examples';
-import AutomatoResultante from '../components/AutomatoResultante';
-import GramaticaRegularResultante from '../components/GramaticaRegularResultante';
 
 class App extends Component {
   state = {
@@ -48,12 +46,6 @@ class App extends Component {
         </Col>
         <Col {...columnsStyle} style={visibleStyle}>
           <Determinizacao rules={rules} />
-        </Col>
-        <Col {...columnsStyle} style={visibleStyle}>
-          <AutomatoResultante rules={rules} />
-        </Col>
-        <Col {...columnsStyle} style={visibleStyle}>
-          <GramaticaRegularResultante rules={rules} />
         </Col>
       </Row>
     );

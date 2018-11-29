@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  AutoComplete, Button, Popover, Tag,
+  AutoComplete, Button,
 } from 'antd';
 import _ from 'lodash';
 
@@ -152,7 +152,7 @@ class GramaticaRegular extends Component {
           onSearch={this.handleSearch}
           onChange={this.handleChange(rule)}
           value={`${rule.name} ::= ${rule.value}`}
-          style={{ width: '300px' }}
+          style={{ width: '250px' }}
         />
         <Button size="small" title="Remover Regra" onClick={this.handleDeleteRule(rule)} icon="delete" type="danger" style={{ marginLeft: 10, display: rule.initial ? 'none' : '' }} />
         <Button size="small" onClick={this.handleNewRule} style={{ marginLeft: 5, display: rules.length === index + 1 ? '-webkit-inline-box' : 'none' }} icon="plus" title="Nova Regra" />

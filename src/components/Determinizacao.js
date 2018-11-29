@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Icon, Table } from 'antd';
 import _ from 'lodash';
+
 import {
   getNextVariablesRules, getTerminais, FINALIZADOR, isFinished,
 } from '../services/helper';

@@ -53,6 +53,11 @@ class Examples extends Component {
             <Tag style={tagStyle}>B ::= aC </Tag>
             <Tag style={tagStyle}>C ::= bD</Tag>
             <Tag style={tagStyle}>D ::= aD | bD | #</Tag>
+            <Divider orientation="left">4</Divider>
+            <Tag style={tagStyle}>S ::= aA | bB | b | cS | c | #</Tag>
+            <Tag style={tagStyle}>A ::= aS | a | bC | cA </Tag>
+            <Tag style={tagStyle}>B ::= aA | cB | cS | c</Tag>
+            <Tag style={tagStyle}>C ::= aS | a | cA | cC</Tag>
           </Panel>
         </Collapse>
 

@@ -1,14 +1,18 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Table, Tag } from 'antd';
 import _ from 'lodash';
 import {
   getTerminais, getNextVariablesRules, isFinished,
 } from '../services/helper';
+import AutomatoResultante from './AutomatoResultante';
 
 class Determinizacao extends Component {
   state = {
     oRules: [],
+    tRules: [],
+    groupL: [],
+    groupR: [],
   };
 
   componentDidUpdate(nextProps) {
@@ -29,12 +33,18 @@ class Determinizacao extends Component {
     groupK = _.uniq(_.flatten(_.compact(groupK)));
     groupKF = _.uniq(_.flatten(_.compact(groupKF)));
 
-    const result = this.calculaMinimizacao(groupK, groupKF, rules);
+    const minimization = this.calculaMinimizacao(groupK, groupKF, rules);
+    const result = minimization.lines;
+    const groupL = minimization.groupL;
+    const groupR = minimization.groupR;
 
     if (JSON.stringify(this.state.oRules) !== JSON.stringify(result)) {
       this.setState({
         ...this.state,
+        tRules: rules,
         oRules: result,
+        groupL,
+        groupR,
       });
     }
   }
@@ -112,8 +122,10 @@ class Determinizacao extends Component {
     let responseRight = [groupKF];
 
     let isPossible = true;
+    let groups = [];
+
     while (isPossible) {
-      const groups = _.concat(responseLeft, responseRight);
+      groups = _.concat(responseLeft, responseRight);
 
       responseLeft = this.rebuildLine(responseLeft, groups, rules);
       responseRight = this.rebuildLine(responseRight, groups, rules);
@@ -130,10 +142,14 @@ class Determinizacao extends Component {
       }
     }
 
-    return [
-      ...result,
-      ...resposta,
-    ];
+    return {
+      groupL: responseLeft,
+      groupR: responseRight,
+      lines: [
+        ...result,
+        ...resposta,
+      ],
+    };
   }
 
   getGroups = (rule, finished) => {
@@ -158,7 +174,15 @@ class Determinizacao extends Component {
     }];
 
     return (
-      <Table title={() => 'Minimização'} bordered dataSource={this.state.oRules} columns={columns} pagination={false} />
+      <Fragment>
+        <Table title={() => 'Minimização'} bordered dataSource={this.state.oRules} columns={columns} pagination={false} />
+        <AutomatoResultante
+          groupL={this.state.groupL}
+          groupR={this.state.groupR}
+          rules={this.state.tRules}
+          originalRules={this.props.originalRules}
+        />
+      </Fragment>
     );
   }
 }
