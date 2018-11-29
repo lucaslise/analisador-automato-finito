@@ -14,7 +14,13 @@ class GramaticaRegularResultante extends Component {
         finished: group.finished,
       };
 
-      const res = this.props.terminais.map(terminal => `${terminal}${group[terminal].replace('*', '')}`);
+      const res = this.props.terminais.map((terminal) => {
+        if (group[terminal].length > 1) {
+          return `${terminal}${group[terminal].replace('*', '')}`;
+        }
+
+        return null;
+      });
 
       value = _.merge(value, { value: res });
 
@@ -30,7 +36,7 @@ class GramaticaRegularResultante extends Component {
         {this.getGR().map(gr => (
           <div>
             {`${gr.variable} ::= `}
-            {gr.value.join(' | ')}
+            {_.compact(gr.value).join(' | ')}
             {gr.finished ? ' | #' : ''}
           </div>
         ))}
