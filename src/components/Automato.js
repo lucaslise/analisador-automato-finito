@@ -5,19 +5,19 @@ import {
 } from 'antd';
 import _ from 'lodash';
 import {
-  getTerminais, FINALIZADOR, findNextRule, isAFND,
+  getTerminais, FINALIZADOR, findNextRule, isAFND, ALTERNATIVE_VARIABLE,
 } from '../services/helper';
 
 class Automato extends Component {
   state = {};
 
-  filterCorrectRules = rules => _.reject(rules, rule => rule.value === '' && rule.name !== 'X');
+  filterCorrectRules = rules => _.reject(rules, rule => rule.value === '' && rule.name !== ALTERNATIVE_VARIABLE);
 
   render() {
     let rules = [
       ...this.props.rules,
       {
-        name: 'X',
+        name: ALTERNATIVE_VARIABLE,
         value: '',
       },
     ];
@@ -50,7 +50,7 @@ class Automato extends Component {
             </Fragment>
           );
         }
-        return rule.value.indexOf(FINALIZADOR) > -1 || rule.name === 'X' ? `* ${rule.name}` : rule.name;
+        return rule.value.indexOf(FINALIZADOR) > -1 || rule.name === ALTERNATIVE_VARIABLE ? `* ${rule.name}` : rule.name;
       },
     },
     ...addColumns];
@@ -58,7 +58,7 @@ class Automato extends Component {
 
     return (
       <div>
-        {rules[0] && rules[0].name === 'X'
+        {rules[0] && rules[0].name === ALTERNATIVE_VARIABLE
           ? <p style={{ textAlign: 'center' }}>Adicione uma Gramática Regular</p>
           : (
             <div>

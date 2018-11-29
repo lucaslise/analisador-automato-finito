@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Table } from 'antd';
+import { Table, Tag } from 'antd';
 import _ from 'lodash';
 import {
   getTerminais, getNextVariablesRules, isFinished,
@@ -17,9 +17,18 @@ class AutomatoResultante extends Component {
     let columns = [{
       title: '',
       key: '1',
-      dataIndex: 'name',
       width: 400,
       align: 'center',
+      render: v => (
+        <Fragment>
+          <Tag style={{ float: 'left', fontSize: 9 }} title="Grupo">
+            {v.value}
+          </Tag>
+          <span style={{ float: 'right', fontSize: 14, fontWeight: 'bold' }}>
+            {v.name}
+          </span>
+        </Fragment>
+      ),
     }];
 
     columns = _.concat(columns, getTerminais(nextProps.originalRules).map(terminal => ({
@@ -27,7 +36,7 @@ class AutomatoResultante extends Component {
       key: terminal,
       width: 400,
       align: 'center',
-      dataIndex: terminal,
+      render: v => v[terminal] && (v[terminal].replace('*', '')) || '-',
     })));
 
     if (JSON.stringify(this.state.columns) !== JSON.stringify(columns)) {
@@ -52,6 +61,7 @@ class AutomatoResultante extends Component {
       name: group.name,
       variable: group.variable,
       finished: group.finished,
+      value: group.value.join(', '),
     };
 
     getTerminais(this.props.originalRules).forEach((terminal) => {

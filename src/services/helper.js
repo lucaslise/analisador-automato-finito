@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 export const FINALIZADOR = '#';
+export const ALTERNATIVE_VARIABLE = 'X';
 
 export function isAFND(rules) {
   const afnd = rules.filter(({ value }) => {
@@ -27,7 +28,7 @@ export function findNextRule(value, char) {
     g = g.replace(/ /g, '');
 
     if (g[0] === char) {
-      return g[1] || 'X';
+      return g[1] || ALTERNATIVE_VARIABLE;
     } if (g[1] === char) {
       return g[0];
     }
@@ -50,7 +51,7 @@ export function getNextVariablesRules(variables, rules, terminal) {
 export function isFinished(variables, rules) {
   let finaliza = false;
   _.toArray(variables).forEach((n) => {
-    if (n === 'X') {
+    if (n === ALTERNATIVE_VARIABLE) {
       finaliza = true;
       return;
     }

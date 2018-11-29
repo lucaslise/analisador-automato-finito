@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Card } from 'antd';
 import _ from 'lodash';
+import { FINALIZADOR } from '../services/helper';
 
 class GramaticaRegularResultante extends Component {
   state = {};
@@ -35,9 +36,9 @@ class GramaticaRegularResultante extends Component {
       <Card title="Gramática Regular Resultante" style={{ marginTop: 15 }}>
         {this.getGR().map(gr => (
           <div>
-            {`${gr.variable} ::= `}
+            <span style={{ fontWeight: 'bold' }}>{`${gr.variable} ::= `}</span>
             {_.compact(gr.value).join(' | ')}
-            {gr.finished ? ' | #' : ''}
+            {gr.finished ? ` | ${FINALIZADOR}` : ''}
           </div>
         ))}
       </Card>
